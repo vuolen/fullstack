@@ -1,8 +1,23 @@
 
 import express from 'express'
+import morgan from 'morgan'
+import cors from 'cors'
+
 const app = express()
 
 app.use(express.json())
+app.use(morgan((tokens, req, res) => {
+    return [
+        tokens.method(req, res),
+        tokens.url(req, res),
+        tokens.status(req, res),
+        tokens.res(req, res, 'content-length'), '-',
+        tokens['response-time'](req, res), 'ms',
+        JSON.stringify(req.body)
+    ].join(" ")
+}))
+app.use(cors())
+app.use(express.static('build'))
 
 let persons = [
     {
@@ -73,7 +88,7 @@ app.get('/info', (_req, res) => {
 <p>${new Date()}</p>`)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
