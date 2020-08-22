@@ -1,0 +1,9 @@
+
+> puhelinluettelo-backend@1.0.0 start /home/lennu/koulu/fullstack/osa3/puhelinluettelo-backend
+> tsc -w & node build/index.js
+
+Hello world
+c11:59:35 - Starting compilation in watch mode...
+
+
+11:59:36 - Found 0 errors. Watching for file changes.
