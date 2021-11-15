@@ -49,16 +49,20 @@ const App = () => {
         });
       }
       return;
+    } else {
+      const newPerson = { name: newName, number: newNumber };
+
+      personsService.create(newPerson).then((data) => {
+        setPersons(persons.concat(data));
+        setNewName("");
+        setNewNumber("");
+        setNotificationForFiveSeconds(`Added ${newPerson.name}`);
+      }).catch(error => {
+        setNotificationForFiveSeconds(error.response.data.error, true);
+      })
     }
 
-    const newPerson = { name: newName, number: newNumber };
-
-    personsService.create(newPerson).then((data) => {
-      setPersons(persons.concat(data));
-      setNewName("");
-      setNewNumber("");
-      setNotificationForFiveSeconds(`Added ${newPerson.name}`);
-    });
+    
   };
 
   const getFilteredContacts = () =>
