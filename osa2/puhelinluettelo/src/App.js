@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
-import ContactList from "./components/ContactList";
-import ContactFilterForm from "./components/ContactFilterForm";
-import Notification from "./components/Notification";
+import React, {useState, useEffect} from 'react';
+import ContactList from './components/ContactList';
+import ContactFilterForm from './components/ContactFilterForm';
+import Notification from './components/Notification';
 
-import personsService from "./services/persons";
-import "./index.css";
+import personsService from './services/persons';
+import './index.css';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [filter, setFilter] = useState("");
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [filter, setFilter] = useState('');
   const [notification, setNotification] = useState(null);
   const [isNotificationError, setIsNotificationError] = useState(false);
 
@@ -34,40 +34,38 @@ const App = () => {
 
     if (persons.some((elem) => elem.name === newName)) {
       const existing = persons.find((p) => p.name === newName);
-      const newPerson = { ...existing, number: newNumber };
+      const newPerson = {...existing, number: newNumber};
       const confirm = window.confirm(
-        `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`
+          `${newPerson.name} is already added to the phonebook, replace the old number with a new one?`,
       );
       if (confirm) {
         personsService.update(newPerson.id, newPerson).then((data) => {
           setPersons(persons.map((p) => (p.id !== newPerson.id ? p : data)));
-          setNewName("");
-          setNewNumber("");
+          setNewName('');
+          setNewNumber('');
           setNotificationForFiveSeconds(`Updated ${newPerson.name}`);
-        }).catch(error => {
+        }).catch((error) => {
           setNotificationForFiveSeconds(`${newPerson.name} has already been deleted from the server`, true);
         });
       }
       return;
     } else {
-      const newPerson = { name: newName, number: newNumber };
+      const newPerson = {name: newName, number: newNumber};
 
       personsService.create(newPerson).then((data) => {
         setPersons(persons.concat(data));
-        setNewName("");
-        setNewNumber("");
+        setNewName('');
+        setNewNumber('');
         setNotificationForFiveSeconds(`Added ${newPerson.name}`);
-      }).catch(error => {
+      }).catch((error) => {
         setNotificationForFiveSeconds(error.response.data.error, true);
-      })
+      });
     }
-
-    
   };
 
   const getFilteredContacts = () =>
     persons.filter((elem) =>
-      elem.name.toLowerCase().includes(filter.toLowerCase())
+      elem.name.toLowerCase().includes(filter.toLowerCase()),
     );
 
   const handleNameChange = (event) => {
