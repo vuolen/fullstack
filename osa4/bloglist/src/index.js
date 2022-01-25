@@ -1,3 +1,4 @@
+const { PORT } = require("./config")
 const http = require('http')
 const app = require('./app')
 
