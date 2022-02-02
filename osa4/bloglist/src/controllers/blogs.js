@@ -10,7 +10,6 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', (request, response) => {
-    console.log(request.body)
     const blog = new Blog(request.body)
 
     if (blog.likes === undefined) {
@@ -31,6 +30,11 @@ blogsRouter.post('/', (request, response) => {
 blogsRouter.delete("/:id", async (request, response) => {
     await Blog.findByIdAndDelete(request.params.id)
     response.status(204).send()
+})
+
+blogsRouter.put("/:id", async (request, response) => {
+    const res = await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
+    response.json(res)
 })
 
 module.exports = blogsRouter
