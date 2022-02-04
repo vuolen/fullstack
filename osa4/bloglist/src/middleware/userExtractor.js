@@ -1,3 +1,6 @@
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
+
 const userExtractor = async (request, response, next) => {
     request.user = null
     if (request.token) {
