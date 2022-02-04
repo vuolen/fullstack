@@ -1,6 +1,7 @@
 const { MONGOURL } = require('./config')
 const express = require('express')
 const cors = require('cors')
+const tokenExtractor = require('./middleware/tokenExtractor')
 const mongoose = require('mongoose')
 
 console.log('connecting to', MONGOURL)
@@ -10,6 +11,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(tokenExtractor)
 
 const blogsRouter = require("./controllers/blogs")
 const usersRouter = require('./controllers/users')
