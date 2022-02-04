@@ -10,6 +10,11 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
     const body = request.body
 
+    if (body.password === undefined || body.password.length < 3) {
+        response.status(400).json({error: "invalid password"})
+        return;
+    }
+
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
@@ -19,7 +24,9 @@ usersRouter.post('/', async (request, response) => {
         passwordHash
     })
 
-    const savedUser = await user.save()
+    const savedUser = await user.save().catch(error => {
+        response.status(400).json({error: error.message})
+    })
 
     response.json(savedUser)
 })
