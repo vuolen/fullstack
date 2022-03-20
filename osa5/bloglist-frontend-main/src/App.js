@@ -7,6 +7,9 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [title, setTitle] = useState("")
+  const [author, setAuthor] = useState("")
+  const [URL, setURL] = useState("")
   const [user, setUser] = useState(null)
 
   const handleLogin = async (event) => {
@@ -26,6 +29,17 @@ const App = () => {
     window.localStorage.removeItem("user")
     setUser(null)
     blogService.setToken(null)
+  }
+
+  const handleCreate = async (event) => {
+   event.preventDefault()
+   const response = await blogService.create({
+     title, author, URL
+   })
+   setBlogs([...blogs, response])
+   setTitle("")
+   setAuthor("")
+   setURL("")
   }
 
   useEffect(() => {
@@ -48,8 +62,8 @@ const App = () => {
       <div>
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin}>
-          username: <input type="text" id="username" onChange={({target}) => setUsername(target.value)}></input><br/>
-          password: <input type="password" id="password" onChange={({target}) => setPassword(target.value)}></input><br/>
+          username: <input type="text" id="username" value={username} onChange={({target}) => setUsername(target.value)}></input><br/>
+          password: <input type="password" id="password" value={password} onChange={({target}) => setPassword(target.value)}></input><br/>
           <input type="submit" value="Log in"></input>
         </form>
       </div>
@@ -63,6 +77,13 @@ const App = () => {
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
+      <h2>create new</h2>
+      <form onSubmit={handleCreate}>
+          title: <input type="text" id="title" value={title} onChange={({target}) => setTitle(target.value)}></input><br/>
+          author: <input type="text" id="author" value={author} onChange={({target}) => setAuthor(target.value)}></input><br/>
+          url: <input type="text" id="url" value={URL} onChange={({target}) =>  setURL(target.value)}></input><br/>
+          <input type="submit" value="create"></input>
+      </form>
     </div>
   )
 }

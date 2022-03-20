@@ -9,4 +9,10 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-export default { getAll, setToken }
+const create = (blog) => {
+  const config = {headers: { Authorization: token }}
+  const request = axios.post(baseUrl, blog, config)
+  return request.then(response => response.data)
+}
+
+export default { getAll, setToken, create }
