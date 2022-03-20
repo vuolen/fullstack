@@ -12,15 +12,35 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     const response = await axios.post("/api/login", {username, password})
-    setUser(response.data)
+    blogService.setToken(response.data.token)
+    const newUser = response.data
+    setUser(newUser)
     setUsername("")
     setPassword("")
+    window.localStorage.setItem(
+      "user", JSON.stringify(newUser)
+    )
+  }
+
+  const handleLogout = async (event) => {
+    window.localStorage.removeItem("user")
+    setUser(null)
+    blogService.setToken(null)
   }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
+  }, [])
+
+  useEffect(() => {
+    const loggedUser = window.localStorage.getItem("user")
+    if (loggedUser) {
+      const newUser = JSON.parse(loggedUser)
+      setUser(newUser)
+      blogService.setToken(newUser.token)
+    }
   }, [])
 
   if (user === null) {
@@ -39,7 +59,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      {user.name} logged in
+      {user.name} logged in <button onClick={handleLogout}>logout</button>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
