@@ -7,7 +7,7 @@ import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState({})
   const createFormRef = useRef()
   
   const [message, setMessage] = useState("")
@@ -36,7 +36,7 @@ const App = () => {
   const handleCreate = async (blog) => {
     try {
       const response = await blogService.create(blog)
-      setBlogs([...blogs, response])
+      setBlogs({...blogs, [blog.id]: blog})
       setMessage(`${blog.title} by ${blog.author} added!`)
       createFormRef.current.toggleVisibility()
     } catch (e) {
@@ -44,9 +44,18 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blog) => {
+    try {
+      const response = await blogService.put({...blog, likes: blog.likes + 1})
+      setBlogs({...blogs, [blog.id]: response})
+    } catch (e) {
+      console.log("liking failed", e)
+    }
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( Object.fromEntries(blogs.map(blog => [blog.id, blog])) )
     )  
   }, [])
 
@@ -86,8 +95,8 @@ const App = () => {
           <h3>{message}</h3>
         </div> : null}
       {user.name} logged in <button onClick={handleLogout}>logout</button>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      {Object.values(blogs).map(blog =>
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
       <Toggleable buttonLabel="create" ref={createFormRef}>
         <CreateBlogForm
