@@ -1,15 +1,16 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import CreateBlogForm from './components/CreateBlogForm'
+import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
-  const [title, setTitle] = useState("")
-  const [author, setAuthor] = useState("")
-  const [URL, setURL] = useState("")
+  const createFormRef = useRef()
+  
   const [message, setMessage] = useState("")
   const [user, setUser] = useState(null)
 
@@ -36,17 +37,12 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
+  const handleCreate = async (blog) => {
     try {
-      const response = await blogService.create({
-      title, author, URL
-      })
+      const response = await blogService.create(blog)
       setBlogs([...blogs, response])
-      setTitle("")
-      setAuthor("")
-      setURL("")
-      setMessage(`${title} by ${author} added!`)
+      setMessage(`${blog.title} by ${blog.author} added!`)
+      createFormRef.current.toggleVisibility()
     } catch (e) {
       setMessage(e.response.data.error)
     }
@@ -101,13 +97,10 @@ const App = () => {
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
-      <h2>create new</h2>
-      <form onSubmit={handleCreate}>
-          title: <input type="text" id="title" value={title} onChange={({target}) => setTitle(target.value)}></input><br/>
-          author: <input type="text" id="author" value={author} onChange={({target}) => setAuthor(target.value)}></input><br/>
-          url: <input type="text" id="url" value={URL} onChange={({target}) =>  setURL(target.value)}></input><br/>
-          <input type="submit" value="create"></input>
-      </form>
+      <Toggleable buttonLabel="create" ref={createFormRef}>
+        <CreateBlogForm
+          handleSubmit={handleCreate} />
+      </Toggleable>
     </div>
   )
 }
