@@ -95,7 +95,7 @@ const App = () => {
           <h3>{message}</h3>
         </div> : null}
       {user.name} logged in <button onClick={handleLogout}>logout</button>
-      {Object.values(blogs).map(blog =>
+      {Object.values(blogs).sort((a, b) => b.likes - a.likes).map(blog =>
         <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       )}
       <Toggleable buttonLabel="create" ref={createFormRef}>
