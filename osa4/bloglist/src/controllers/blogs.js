@@ -17,7 +17,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
     if (!request.user) {
-        return response.status(401).json({error: "not authorized"})
+        return response.status(401).json({ error: "not authorized" })
     }
 
     const blog = new Blog(request.body)
@@ -26,7 +26,7 @@ blogsRouter.post('/', async (request, response) => {
         blog.likes = 0
     }
     if (blog.title === undefined && blog.url === undefined) {
-        response.status(400).json({error: "title and url not defined"})
+        response.status(400).json({ error: "title and url not defined" })
         return
     }
 
@@ -43,13 +43,13 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.delete("/:id", async (request, response) => {
 
     if (!request.user) {
-        return response.status(401).json({error: "not authorized"})
+        return response.status(401).json({ error: "not authorized" })
     }
 
     const blog = await Blog.findById(request.params.id)
 
     if (request.user._id.toString() !== blog.user.toString()) {
-        return response.status(401).json({error: "not authorized"})
+        return response.status(401).json({ error: "not authorized" })
     }
 
     blog.delete()

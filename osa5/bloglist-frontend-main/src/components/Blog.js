@@ -8,14 +8,13 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
     }
 
     return (<div style={blogStyle}>
-        {blog.title}
+        {blog.title} by {blog.author}
         <button onClick={() => setExpanded(!expanded)}>
             {expanded ? "hide" : "view"}
         </button>
         <br />
         {expanded ?
             <>
-                {blog.author} <br />
                 {blog.url} <br />
                 {blog.likes}
                 <button onClick={() => handleLike(blog)}>
@@ -41,7 +40,8 @@ Blog.propTypes = {
         url: string.isRequired
     }).isRequired,
     user: shape({
-        username: string.isRequired
+        username: string.isRequired,
+        name: string.isRequired
     }).isRequired
 }
 
