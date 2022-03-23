@@ -58,6 +58,7 @@ describe("Blog", () => {
 
         const element = screen.queryByText("10", {exact: false})
         expect(element).toBeDefined()
+        
     })
 
 })
