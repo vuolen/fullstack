@@ -18,47 +18,74 @@ describe("Blog", () => {
         user
     }
 
-    const renderBlog = blog => render(
-        <Blog blog={blog} handleDelete={() => {}} handleLike={() => {}} user={{name: "Test User", username: "testuser"}} />
+    const stub = () => {}
+
+    const defaultProps = {
+        blog: blog,
+        handleDelete: stub,
+        handleLike: stub,
+        user: user
+    }
+
+    const renderBlog = (props) => render(
+        <Blog {...props} />
     )
 
     test("renders title", () => {
-        renderBlog(blog)
+        renderBlog(defaultProps)
 
         const element = screen.getByText("A nice blog", {exact: false})
         expect(element).toBeDefined()
     })
 
     test("renders author", () => {
-        renderBlog(blog)
+        renderBlog(defaultProps)
 
         const element = screen.getByText("Joe Smith", {exact: false})
         expect(element).toBeDefined()
     })
 
     test("doesnt render URL", () => {
-        renderBlog(blog)
+        renderBlog(defaultProps)
 
         const element = screen.queryByText("joesmith.com", {exact: false})
         expect(element).toBeNull()
     })
 
     test("doesnt render likes", () => {
-        renderBlog(blog)
+        renderBlog(defaultProps)
 
         const element = screen.queryByText("10", {exact: false})
         expect(element).toBeNull()
     })
 
     test("renders likes when clicked", () => {
-        renderBlog(blog)
+        renderBlog(defaultProps)
 
         const button = screen.getByText("view")
         userEvent.click(button)
 
         const element = screen.queryByText("10", {exact: false})
         expect(element).toBeDefined()
-        
+
+    })
+
+    test("handleLike gets called twice when liked twice", () => {
+        const mockHandleLike = jest.fn()
+
+        renderBlog({
+            ...defaultProps,
+            handleLike: mockHandleLike
+        })
+
+        const viewButton = screen.getByText("view")
+        userEvent.click(viewButton)
+
+        const likeButton = screen.getByText("like")
+        userEvent.click(likeButton)
+        userEvent.click(likeButton)
+
+        expect(mockHandleLike.mock.calls).toHaveLength(2)
     })
 
 })
