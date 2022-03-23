@@ -1,3 +1,4 @@
+import { func } from 'prop-types'
 import { useState } from 'react'
 
 const CreateBlogForm = ({
@@ -24,6 +25,10 @@ const CreateBlogForm = ({
             </form>
         </div>
     )
+}
+
+CreateBlogForm.propTypes = {
+    handleSubmit: func.isRequired
 }
 
 export default CreateBlogForm

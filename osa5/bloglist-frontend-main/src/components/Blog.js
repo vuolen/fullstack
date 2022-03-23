@@ -1,3 +1,4 @@
+import { func, shape, string } from "prop-types"
 import { useState } from "react"
 
 const Blog = ({blog, handleLike, handleDelete, user}) => {
@@ -29,6 +30,19 @@ const Blog = ({blog, handleLike, handleDelete, user}) => {
       </>
       : null}
   </div>)
+}
+
+Blog.propTypes = {
+  handleLike: func.isRequired,
+  handleDelete: func.isRequired,
+  blog: shape({
+    title: string.isRequired,
+    author: string.isRequired,
+    url: string.isRequired
+  }).isRequired,
+  user: shape({
+    username: string.isRequired
+  }).isRequired
 }
 
 export default Blog
