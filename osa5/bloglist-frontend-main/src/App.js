@@ -36,7 +36,7 @@ const App = () => {
   const handleCreate = async (blog) => {
     try {
       const response = await blogService.create(blog)
-      setBlogs({...blogs, [blog.id]: blog})
+      setBlogs({...blogs, [response.id]: response})
       setMessage(`${blog.title} by ${blog.author} added!`)
       createFormRef.current.toggleVisibility()
     } catch (e) {
@@ -46,10 +46,22 @@ const App = () => {
 
   const handleLike = async (blog) => {
     try {
-      const response = await blogService.put({...blog, likes: blog.likes + 1})
+      const response = await blogService.put({id: blog.id, likes: blog.likes + 1})
       setBlogs({...blogs, [blog.id]: response})
     } catch (e) {
       console.log("liking failed", e)
+    }
+  }
+
+  const handleDelete = async (blog) => {
+    try {
+      const response = await blogService.del(blog)
+      const newBlogs = {...blogs}
+      delete newBlogs[blog.id]
+      setBlogs(newBlogs)
+
+    } catch (e) {
+      console.log("deleting failed", e)
     }
   }
 
@@ -74,6 +86,7 @@ const App = () => {
     }
   }, [message])
 
+
   if (user === null) {
     return (
       <div>
@@ -96,7 +109,7 @@ const App = () => {
         </div> : null}
       {user.name} logged in <button onClick={handleLogout}>logout</button>
       {Object.values(blogs).sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} handleDelete={handleDelete} user={user} />
       )}
       <Toggleable buttonLabel="create" ref={createFormRef}>
         <CreateBlogForm

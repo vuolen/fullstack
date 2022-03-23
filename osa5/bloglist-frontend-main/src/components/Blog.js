@@ -1,12 +1,11 @@
 import { useState } from "react"
 
-const Blog = ({blog, handleLike}) => {
+const Blog = ({blog, handleLike, handleDelete, user}) => {
   const [expanded, setExpanded] = useState(false)
   const blogStyle = {
     margin: "10px"
   }
   
-
   return (<div style={blogStyle}>
     {blog.title} 
     <button onClick={() => setExpanded(!expanded)}>
@@ -20,7 +19,13 @@ const Blog = ({blog, handleLike}) => {
         {blog.likes}
         <button onClick={() => handleLike(blog)}>
           like
-        </button>
+        </button> <br/>
+        Added by {blog.user.name}
+        {user.username === blog.user.username ? 
+          <button onClick={() => handleDelete(blog)}>
+            remove
+          </button> 
+          : null}
       </>
       : null}
   </div>)

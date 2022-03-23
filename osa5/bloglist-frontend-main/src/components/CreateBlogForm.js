@@ -12,7 +12,7 @@ const CreateBlogForm = ({
             <h2>create new</h2>
             <form onSubmit={event => {
                 event.preventDefault()
-                handleSubmit({title, author, URL})
+                handleSubmit({title, author, url: URL})
                 setTitle("")
                 setAuthor("")
                 setURL("")
