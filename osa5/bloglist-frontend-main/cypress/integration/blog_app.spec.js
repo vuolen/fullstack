@@ -67,5 +67,18 @@ describe('Blog app', function() {
 
       cy.contains("1")
     })
+
+    it('A blog can be removed', function () {
+      cy.contains("create").click()
+      cy.get("input#title").type("Test Blog Title")
+      cy.get("input#author").type("Test Blog Author")
+      cy.get("input#url").type("testblogurl.com")
+      cy.get("form").submit()
+
+      cy.contains("view").click()
+      cy.contains("remove").click()
+
+      cy.contains("Test Blog Title").should("not.exist")
+    })
   })
 })
