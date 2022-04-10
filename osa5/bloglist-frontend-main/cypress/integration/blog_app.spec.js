@@ -44,23 +44,23 @@ describe('Blog app', function() {
       cy.get("input#password").type("testpassword")
       cy.get("form").submit()
     })
+    
+    const createBlog = (title, author, url) => {
+      cy.contains("create").click()
+      cy.get("input#title").type(title)
+      cy.get("input#author").type(author)
+      cy.get("input#url").type(url)
+      cy.get("form").submit()
+    }
 
     it('A blog can be created', function() {
-      cy.contains("create").click()
-      cy.get("input#title").type("Test Blog Title")
-      cy.get("input#author").type("Test Blog Author")
-      cy.get("input#url").type("testblogurl.com")
-      cy.get("form").submit()
+      createBlog("Test Blog Title", "Test Blog Author", "testblogurl.com")  
 
       cy.contains("Test Blog Title by Test Blog Author")
     })
 
     it('A blog can be liked', function() {
-      cy.contains("create").click()
-      cy.get("input#title").type("Test Blog Title")
-      cy.get("input#author").type("Test Blog Author")
-      cy.get("input#url").type("testblogurl.com")
-      cy.get("form").submit()
+      createBlog("Test Blog Title", "Test Blog Author", "testblogurl.com")  
 
       cy.contains("view").click()
       cy.contains("like").click()
@@ -69,16 +69,26 @@ describe('Blog app', function() {
     })
 
     it('A blog can be removed', function () {
-      cy.contains("create").click()
-      cy.get("input#title").type("Test Blog Title")
-      cy.get("input#author").type("Test Blog Author")
-      cy.get("input#url").type("testblogurl.com")
-      cy.get("form").submit()
+      createBlog("Test Blog Title", "Test Blog Author", "testblogurl.com")  
 
       cy.contains("view").click()
       cy.contains("remove").click()
 
       cy.contains("Test Blog Title").should("not.exist")
+    })
+
+    it('Blogs are sorted by likes', function () {
+      createBlog("Most liked", "Author 1", "fakeauthor.com")  
+      createBlog("Second most liked", "Author 2", "fakeauthor.com")  
+      createBlog("Least liked", "Author 3", "fakeauthor.com")
+
+      cy.contains("Most liked").then((blog) => {
+        const wrap = cy.wrap(blog)
+        wrap.contains("view").click()
+        wrap.contains("like").click()
+        wrap.contains("like").click()
+        wrap.contains("like").click()
+      })
     })
   })
 })
